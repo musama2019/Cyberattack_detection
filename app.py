@@ -84,7 +84,7 @@ def predict():
 
     # Perform prediction
     # Load the trained model
-    model = joblib.load("D:\\anomoly detection\\random_forest_classifier_model(12).pkl")
+    model = joblib.load("D:\\anomoly detection\\random_forest_classifier_model(13).pkl")
 
     scaler = joblib.load('scaler4.pkl')
     
