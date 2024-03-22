@@ -59,9 +59,6 @@ def adjust_predictions(event, predicted_attack):
             if predicted_attack == events[event]['ignored_attack']:
                 return 'Normal'  # Ignore the attack
     return predicted_attack  # Keep the original prediction
-# Function to convert Series to dictionary
-def series_to_dict(series):
-    return series.to_dict()
 
 label_map = {
     'Analysis': 'Analysis',
@@ -84,6 +81,9 @@ def index():
 def calculate_percentage(predictions):
     percentage_attack_types = (pd.Series(predictions).value_counts() / len(predictions)) * 100
     return percentage_attack_types
+# Function to convert Series to dictionary
+def series_to_dict(series):
+    return series.to_dict()
 
 import io
 
