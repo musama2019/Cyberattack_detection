@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberAtack Detector</title></title>
+    <title>Event-based Prediction</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,9 +78,13 @@
 
     <!-- Result Section -->
     <div class="result">
-        <h2>Result</h2>
-        {% if prediction_result %}
-            <p>The predicted attack is: <span class="attack">{{ prediction_result }}</span></p>
+        <h2>Results</h2>
+        {% if prediction_results %}
+            <ul>
+                {% for result in prediction_results %}
+                    <li>The predicted attack is: <span class="attack">{{ result }}</span></li>
+                {% endfor %}
+            </ul>
         {% endif %}
     </div>
 </body>
