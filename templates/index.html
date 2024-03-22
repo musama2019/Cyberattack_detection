@@ -76,17 +76,6 @@
         <input type="submit" value="Predict">
     </form>
 
-    <!-- Result Section -->
-    <div class="result">
-        <h2>Results</h2>
-        {% if prediction_results %}
-            <ul>
-                {% for result in prediction_results %}
-                    <li>The predicted attack is: <span class="attack">{{ result }}</span></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
 
      <!-- Percentage Section -->
      <div class="percentage">
