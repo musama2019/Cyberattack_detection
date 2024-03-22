@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event-based Prediction</title>
+</head>
+<body>
+    <h1>Event-based Prediction</h1>
+    <form action="/predict" method="POST" enctype="multipart/form-data">
+        <label for="event">Select Event:</label>
+        <select name="event" id="event">
+            <option value="Online Course Registration">Online Course Registration</option>
+            <option value="Networking Class Scanning">Networking Class Scanning</option>
+            <option value="Laboratory Software Updates">Laboratory Software Updates</option>
+            <option value="Remote Collaboration Tools">Remote Collaboration Tools</option>
+            <option value="Cybersecurity Penetration Testing">Cybersecurity Penetration Testing</option>
+            <option value="Software Testing Projects">Software Testing Projects</option>
+            <option value="Data Mining Research">Data Mining Research</option>
+            <option value="Exploit Development Exercises">Exploit Development Exercises</option>
+            <option value="Distributed Computing Projects">Distributed Computing Projects</option>
+            <option value="High Bandwidth Usage During Events">High Bandwidth Usage During Events</option>
+        </select>
+        <br><br>
+        <label for="file">Upload File:</label>
+        <input type="file" name="file" id="file">
+        <br><br>
+        <input type="submit" value="Predict">
+    </form>
+</body>
+</html>
