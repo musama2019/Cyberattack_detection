@@ -76,6 +76,7 @@ label_map = {
 @app.route('/')
 def index():
     return render_template('index.html', prediction_result=None)
+import io
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -90,13 +91,11 @@ def predict():
     scaler = joblib.load('scaler5.pkl')
     
     # Read the text file into a DataFrame
-    df = pd.read_csv(file)
+    df = pd.read_csv(io.StringIO(file.stream.read().decode("UTF8")), delimiter="\t")
     
-    # Specify columns to drop
+    # Drop the specified columns if they exist in the DataFrame
     columns_to_drop = ['id', 'label', 'attack_cat', 'sloss', 'dloss', 'dwin', 'ct_ftp_cmd']
-    
-    # Drop the specified columns from the first row
-    first_row = df.iloc[0].drop(columns_to_drop)
+    df = df.drop(columns=[col for col in columns_to_drop if col in df.columns], axis=1)
     
     # Initialize LabelEncoder for categorical columns
     label_encoder = LabelEncoder()
@@ -104,28 +103,24 @@ def predict():
     
     # Apply label encoding to categorical columns
     for column in categorical_columns:
-        if column in first_row.index:
+        if column in df.columns:
             try:
-                first_row[column] = label_encoder.fit_transform([first_row[column]])[0]
+                df[column] = label_encoder.fit_transform(df[column])
             except KeyError as e:
                 print(f"Error encoding column '{column}': {e}")
     
-    # Convert the first row to a DataFrame and transpose it
-    first_row_df = pd.DataFrame(first_row).T
-    
     # Scale the values using the loaded scaler
-    scaled_values = scaler.transform(first_row_df)
+    scaled_values = scaler.transform(df)
+    
     # Make predictions using the model
-    features_array = np.array(scaled_values).reshape(1, -1)
-    predicted_label_int = model.predict(features_array)[0]
-    predicted_attack = label_map.get(predicted_label_int, 'Unknown')
+    predictions = model.predict(scaled_values)
+    predicted_attacks = [label_map.get(prediction, 'Unknown') for prediction in predictions]
     
     # Adjust predictions based on the selected event
-    adjusted_prediction = adjust_predictions(event, predicted_attack)
+    adjusted_predictions = [adjust_predictions(event, predicted_attack) for predicted_attack in predicted_attacks]
 
-    # Return the prediction result
-    return render_template('index.html', prediction_result=adjusted_prediction)
-
+    # Return the prediction results
+    return render_template('index.html', prediction_results=adjusted_predictions)
 
 if __name__ == '__main__':
     app.run(debug=True)
