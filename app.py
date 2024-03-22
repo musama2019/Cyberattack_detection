@@ -59,6 +59,9 @@ def adjust_predictions(event, predicted_attack):
             if predicted_attack == events[event]['ignored_attack']:
                 return 'Normal'  # Ignore the attack
     return predicted_attack  # Keep the original prediction
+# Function to convert Series to dictionary
+def series_to_dict(series):
+    return series.to_dict()
 
 label_map = {
     'Analysis': 'Analysis',
@@ -75,7 +78,13 @@ label_map = {
 
 @app.route('/')
 def index():
-    return render_template('index.html', prediction_result=None)
+    return render_template('index.html', prediction_results=None, percentage_results=None)
+
+# Function to calculate percentage of each attack type
+def calculate_percentage(predictions):
+    percentage_attack_types = (pd.Series(predictions).value_counts() / len(predictions)) * 100
+    return percentage_attack_types
+
 import io
 
 @app.route('/predict', methods=['POST'])
@@ -119,8 +128,13 @@ def predict():
     # Adjust predictions based on the selected event
     adjusted_predictions = [adjust_predictions(event, predicted_attack) for predicted_attack in predicted_attacks]
 
-    # Return the prediction results
-    return render_template('index.html', prediction_results=adjusted_predictions)
+    # Calculate the percentage of each attack type
+    percentage_results = calculate_percentage(adjusted_predictions)
 
+    # Convert percentage_results Series to dictionary
+    percentage_results_dict = series_to_dict(percentage_results)
+
+    # Return the prediction and percentage results
+    return render_template('index.html', prediction_results=adjusted_predictions, percentage_results=percentage_results_dict)
 if __name__ == '__main__':
     app.run(debug=True)
