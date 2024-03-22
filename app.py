@@ -72,10 +72,11 @@ label_map = {
     'Shellcode': 'Shellcode',
     'Worms': 'Worms'
 }
-import pickle
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', prediction_result=None)
+
 @app.route('/predict', methods=['POST'])
 def predict():
     # Get event and uploaded file from form data
@@ -84,7 +85,7 @@ def predict():
 
     # Perform prediction
     # Load the trained model
-    model = joblib.load("random_forest_classifier_model(13).pkl")
+    model = joblib.load("D:\\anomoly detection\\random_forest_classifier_model(13).pkl")
 
     scaler = joblib.load('scaler5.pkl')
     
@@ -123,8 +124,7 @@ def predict():
     adjusted_prediction = adjust_predictions(event, predicted_attack)
 
     # Return the prediction result
-     return render_template('index.html', prediction_result=adjusted_prediction)
-
+    return render_template('index.html', prediction_result=adjusted_prediction)
 
 
 if __name__ == '__main__':
