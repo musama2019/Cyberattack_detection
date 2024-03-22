@@ -11,4 +11,4 @@ scikit-learn
 pandas
 numpy
 joblib
-imblearn.over_sampling
+imbalanced-learn
