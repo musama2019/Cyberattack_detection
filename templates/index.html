@@ -4,6 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event-based Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        label, select, input[type="file"], input[type="submit"] {
+            display: block;
+            margin-bottom: 15px;
+        }
+        select, input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
     <h1>Event-based Prediction</h1>
@@ -21,11 +70,13 @@
             <option value="Distributed Computing Projects">Distributed Computing Projects</option>
             <option value="High Bandwidth Usage During Events">High Bandwidth Usage During Events</option>
         </select>
-        <br><br>
         <label for="file">Upload File:</label>
         <input type="file" name="file" id="file">
-        <br><br>
         <input type="submit" value="Predict">
     </form>
+    <!-- Display the result attractively -->
+    <div class="result" id="result">
+        <!-- Result will be displayed here -->
+    </div>
 </body>
 </html>
