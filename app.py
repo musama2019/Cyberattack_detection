@@ -123,7 +123,8 @@ def predict():
     adjusted_prediction = adjust_predictions(event, predicted_attack)
 
     # Return the prediction result
-    return jsonify({'predicted_attack': adjusted_prediction})
+     return render_template('index.html', prediction_result=adjusted_prediction)
+
 
 
 if __name__ == '__main__':
