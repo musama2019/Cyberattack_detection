@@ -87,5 +87,17 @@
             </ul>
         {% endif %}
     </div>
+
+     <!-- Percentage Section -->
+     <div class="percentage">
+        <h2>Percentage of Each Attack Type</h2>
+        {% if percentage_results %}
+            <ul>
+                {% for attack_type, percentage in percentage_results.items() %}
+                    <li>{{ attack_type }}: {{ percentage }}%</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </body>
 </html>
