@@ -86,7 +86,7 @@ def predict():
     # Load the trained model
     model = joblib.load("random_forest_classifier_model(13).pkl")
 
-    scaler = joblib.load('scaler4.pkl')
+    scaler = joblib.load('scaler5.pkl')
     
     # Read the text file into a DataFrame
     df = pd.read_csv(file)
