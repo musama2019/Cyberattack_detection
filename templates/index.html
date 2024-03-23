@@ -3,61 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event-based Prediction</title>
+    <title>Upload File</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
         h1 {
+            color: #000000; /* Green color */
+            font-size: 28px; /* Decreased font size */
             text-align: center;
-            color: #333;
+            margin-top: 20px;
         }
         form {
-            max-width: 600px;
+            width: 60%;
             margin: 0 auto;
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         label {
-            font-weight: bold;
+            font-size: 16px;
+            color: #333333;
         }
-        select, input[type="file"], input[type="submit"] {
+        input[type="file"],
+        select {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border: 1px solid #cccccc;
             border-radius: 5px;
             box-sizing: border-box;
         }
         input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        .result {
-            margin-top: 20px;
+            width: 100%;
             padding: 10px;
-            background-color: #f0f0f0;
+            background-color: #008000;
+            color: #ffffff;
+            border: none;
             border-radius: 5px;
-            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
         }
-        .attack {
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .attack-box {
+            background-color: #f9f9f9;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .attack-name {
             font-weight: bold;
-            color: #FF6347;
+        }
+        .max-probability {
+            color: red; /* Red color for max probability */
         }
     </style>
 </head>
 <body>
-    <h1>Event-based Prediction</h1>
-    <form action="/predict" method="POST" enctype="multipart/form-data">
+    <h1>Cyber Attack Detector</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label><br>
+        <input type="file" id="file" name="file" accept=".txt"><br><br>
         <label for="event">Select Event:</label>
-        <select name="event" id="event">
+        <select id="event" name="event">
+            <option value="No Event">No Event</option>
             <option value="Online Course Registration">Online Course Registration</option>
             <option value="Networking Class Scanning">Networking Class Scanning</option>
             <option value="Laboratory Software Updates">Laboratory Software Updates</option>
@@ -68,25 +87,24 @@
             <option value="Exploit Development Exercises">Exploit Development Exercises</option>
             <option value="Distributed Computing Projects">Distributed Computing Projects</option>
             <option value="High Bandwidth Usage During Events">High Bandwidth Usage During Events</option>
-        </select>
-        <br><br>
-        <label for="file">Upload File:</label>
-        <input type="file" name="file" id="file">
-        <br><br>
-        <input type="submit" value="Predict">
+        </select><br><br>
+        <input type="submit" value="Upload">
     </form>
 
+    {% if probabilities %}
+        <h2>Attack Type Percentages</h2>
+        {% for attack, percentage in probabilities.items() %}
+            <div class="attack-box">
+                <p class="attack-name">{{ attack }}:</p>
+                <ul>
+                    <li {% if attack == max_probability_attack %}class="max-probability"{% endif %}>{{ percentage|round(2) }}%</li>
+                </ul>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-     <!-- Percentage Section -->
-     <div class="percentage">
-        <h2>Percentage of Each Attack Type</h2>
-        {% if percentage_results %}
-            <ul>
-                {% for attack_type, percentage in percentage_results.items() %}
-                    <li>{{ attack_type }}: {{ percentage }}%</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 </body>
 </html>
