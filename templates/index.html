@@ -81,21 +81,18 @@
             <option value="Networking Class Scanning">Networking Class Scanning</option>
             <option value="Laboratory Software Updates">Laboratory Software Updates</option>
             <option value="Remote Collaboration Tools">Remote Collaboration Tools</option>
-            <option value="Cybersecurity Penetration Testing">Cybersecurity Penetration Testing</option>
             <option value="Software Testing Projects">Software Testing Projects</option>
-            <option value="Data Mining Research">Data Mining Research</option>
             <option value="Exploit Development Exercises">Exploit Development Exercises</option>
             <option value="Distributed Computing Projects">Distributed Computing Projects</option>
-            <option value="High Bandwidth Usage During Events">High Bandwidth Usage During Events</option>
         </select><br><br>
         <input type="submit" value="Upload">
     </form>
 
     {% if probabilities %}
         <h2>Attack Type Percentages</h2>
-        {% for attack, percentage in probabilities.items() %}
-            <div class="attack-box">
-                <p class="attack-name">{{ attack }}:</p>
+        {% for attack, percentage in probabilities|dictsort(reverse=true, by='value') %}
+        <div class="attack-box">
+                <p class="attack-name">{{ attack|replace('Shellcode', 'Shellcode Injection')}}:</p>
                 <ul>
                     <li {% if attack == max_probability_attack %}class="max-probability"{% endif %}>{{ percentage|round(2) }}%</li>
                 </ul>
