@@ -11,15 +11,12 @@ model = joblib.load("random_forest_classifier_model(13).pkl")
 scaler = joblib.load('scaler5.pkl')
 
 label_map = {
-    'Analysis': 'Analysis',
     'Backdoor': 'Backdoor',
     'DoS': 'DoS',
     'Exploits': 'Exploits',
     'Fuzzers': 'Fuzzers',
-    'Generic': 'Generic',
-    'Normal': 'Normal',
     'Reconnaissance': 'Reconnaissance',
-    'Shellcode': 'Shellcode',
+    'Shellcode': 'Shellcode Injection',
     'Worms': 'Worms'
 }
 
@@ -33,14 +30,12 @@ events = {
     'Data Mining Research': {'ignored_attack': 'Analysis'},
     'Exploit Development Exercises': {'ignored_attack': 'Shellcode'},
     'Distributed Computing Projects': {'ignored_attack': 'Worms'},
-    'High Bandwidth Usage During Events': {'ignored_attack': 'Normal'},
-    'No Event': {'ignored_attack': 'Normal'}
-    
+    'No Event': {'ignored_attack': None}  # Set ignored_attack to None for 'No Event'
 }
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    selected_event = 'No Event' # Initialize selected event
+    selected_event = 'No Event'  # Initialize selected event
     
     if request.method == 'POST':
         # Check if a file was submitted
@@ -84,30 +79,43 @@ def upload_file():
             # Calculate the probability of each class for each row
             probabilities = model.predict_proba(scaled_values)
             
-            # Find the index of the ignored attack class
+            # Find the ignored attack for the selected event
             ignored_attack = events[selected_event]['ignored_attack']
-            ignored_attack_index = np.where(model.classes_ == ignored_attack)[0][0]
             
-            # Sum up the probabilities for each attack class across all rows, ignoring the selected event
+            # Sum up the probabilities for each attack class across all rows
             attack_prob_sum = {}
             for probs in probabilities:
                 for i, prob in enumerate(probs * 100):
-                    if i != ignored_attack_index:
-                        attack_prob_sum[model.classes_[i]] = attack_prob_sum.get(model.classes_[i], 0) + prob
-            
-            # Add probability of ignored attack to Normal
-            prob = 0
-            for probs in probabilities:
-                prob += probs[ignored_attack_index] * 100  # Add probability of ignored attack to Normal
-            
-            attack_prob_sum['Normal'] = attack_prob_sum.get('Normal', 0) + prob
+                    attack_prob_sum[model.classes_[i]] = attack_prob_sum.get(model.classes_[i], 0) + prob
             
             # Calculate the mean probability for each attack class
             num_rows = len(df)
             mean_attack_probabilities = {attack: prob_sum / num_rows for attack, prob_sum in attack_prob_sum.items()}
+            
+            # Always add 'No Attack' class and its probability
+            mean_attack_probabilities['No Attack'] = mean_attack_probabilities.get('No Attack', 0)
+            
+            # Add mean probabilities of 'Normal', 'Generic', and 'Analysis' classes to 'No Attack'
+            mean_attack_probabilities['No Attack'] += mean_attack_probabilities.get('Normal', 0)
+            mean_attack_probabilities['No Attack'] += mean_attack_probabilities.get('Generic', 0)
+            mean_attack_probabilities['No Attack'] += mean_attack_probabilities.get('Analysis', 0)
+            
+            # If the selected event is 'No Event', do not ignore anything
+            if selected_event != 'No Event':
+                # Add probability of ignored attack to 'No Attack' if it's not already included
+                if ignored_attack and ignored_attack != 'No Attack':
+                    ignored_attack_prob = mean_attack_probabilities.get(ignored_attack, 0)
+                    mean_attack_probabilities['No Attack'] += ignored_attack_prob
+            
+            # Remove 'Normal', 'Generic', 'Analysis', and ignored attack classes from mean_attack_probabilities
+            mean_attack_probabilities.pop('Normal', None)
+            mean_attack_probabilities.pop('Generic', None)
+            mean_attack_probabilities.pop('Analysis', None)
+            mean_attack_probabilities.pop(ignored_attack, None)
+            
             # Precompute the attack with the maximum probability
             max_probability_attack = max(mean_attack_probabilities, key=mean_attack_probabilities.get)
-
+            
             return render_template('index.html', probabilities=mean_attack_probabilities, selected_event=selected_event)
     
     return render_template('index.html', selected_event=selected_event)
